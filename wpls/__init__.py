@@ -1,21 +1,13 @@
-#!/usr/bin/env python3
 """
 Lists the wallpaper file path currently showing on each desktop/space on macOS.
-
-Strategy per desktop:
-  - Fixed image  System Events returns the exact path directly.
-  - Shuffle mode System Events returns a folder path.
-                   The actual currently displayed file is found via lsof on
-                   WallpaperImageExtension, which memory-maps every image it
-                   is actively rendering. Results are assigned to shuffle
-                   desktops in order.
 
 The AppleScript that queries System Events lives in wpls.applescript in the
 same directory as this file.
 
 Note: If your wallpaper folder contains symlinks (e.g. a flat directory of
 symlinks into a deeper hierarchy), macOS resolves them — lsof will show the
-real target path, not the symlink path.
+real target path, not the symlink path. resolve_shuffle_targets() resolves
+symlinks the same way so the two sides always agree.
 """
 
 from __future__ import annotations
@@ -26,32 +18,10 @@ import subprocess
 import sys
 from pathlib import Path
 
-import psutil
-from OSAKit import (
-    OSALanguage,  # pyright: ignore[reportAttributeAccessIssue], # ty: ignore[unresolved-import]
-    OSAScript,  # pyright: ignore[reportAttributeAccessIssue], # ty: ignore[unresolved-import]
-)
+from wpls.list import WALLPAPER_IMAGE_PROCESS, list_wallpapers
 
-LSOF_ARGS = ("lsof", "-F", "n", "-p")
-IMAGE_SUFFIXES = frozenset(
-    {
-        ".avif",
-        ".bmp",
-        ".gif",
-        ".heic",
-        ".heif",
-        ".jpg",
-        ".jpeg",
-        ".png",
-        ".tif",
-        ".tiff",
-        ".webp",
-    }
-)
-
-WALLPAPER_IMAGE_PROCESS = "WallpaperImageExtension"
-
-APPLESCRIPT_FILE = Path(__file__).parent / "wpls.applescript"
+OPEN_ARGS = ("open", "-a")
+OPEN_DEFAULT_APP = "Preview"
 
 
 def require_macos() -> None:
@@ -67,108 +37,61 @@ def require_macos() -> None:
         sys.exit(1)
 
 
-def get_system_events_paths() -> tuple[str, ...]:
-    """System Events — returns exact path for fixed images, folder for shuffle."""
-    source = APPLESCRIPT_FILE.read_text(encoding="utf-8")
-    script = OSAScript.alloc().initWithSource_language_(
-        source,
-        OSALanguage.languageForName_("AppleScript"),
-    )
-    result, error = script.executeAndReturnError_(None)
-    if error:
-        reason = f"AppleScript error: {error}"
-        raise RuntimeError(reason)
-    return tuple(
-        line.strip() for line in result.stringValue().splitlines() if line.strip()
+def next_wallpaper() -> None:
+    """
+    Immediately cycle to the next shuffle wallpaper on all desktops.
+
+    Killing WallpaperImageExtension causes macOS to restart it instantly and
+    pick a fresh image for each shuffle desktop, equivalent to manually
+    clicking "Change Wallpaper" in System Settings.
+    """
+    subprocess.run(  # noqa: S603
+        ("killall", WALLPAPER_IMAGE_PROCESS),
+        check=False,  # non-zero exit if process wasn't running; that's fine
     )
 
 
-def _print_lsof_output(images):
-    print(
-        f"[debug] lsof found {len(images)} open image(s) in {WALLPAPER_IMAGE_PROCESS}:"
+def open_wallpapers(paths: tuple[str, ...], app: str) -> None:
+    """Open the listed wallpaper image paths in the specified app."""
+    paths = tuple(path for path in paths if Path(path).is_file())
+    subprocess.run(  # noqa: S603
+        (*OPEN_ARGS, app, *paths),
+        check=True,
     )
-    for p in images:
-        print(f"  {p}")
-    print()
-
-
-def get_open_wallpaper_images(*, debug: bool = False) -> tuple[str, ...]:
-    """
-    Return mmapped paths from WallpaperImageExtension process.
-
-    These are the images currently on screen. The process
-    resolves symlinks, so paths reflect real targets.
-    """
-    procs = [
-        p
-        for p in psutil.process_iter(["name", "pid"])
-        if p.info["name"] == WALLPAPER_IMAGE_PROCESS
-    ]
-
-    if not procs:
-        if debug:
-            print(f"[debug] {WALLPAPER_IMAGE_PROCESS} not running")
-        return ()
-    pid = str(procs[0].info["pid"])
-
-    # psutil cannot see memory-mapped files on macOS, so we use lsof directly.
-    result = subprocess.run(  # noqa: S603
-        [*LSOF_ARGS, pid], check=False, capture_output=True, text=True
-    )
-
-    images: list[str] = []
-    for line in result.stdout.splitlines():
-        if not line.startswith("n"):
-            continue
-        path = line[1:]
-        if Path(path).suffix.lower() in IMAGE_SUFFIXES:
-            images.append(path)
-
-    if debug:
-        _print_lsof_output(images)
-    return tuple(images)
-
-
-def get_desktop_wallpapers(*, debug: bool = False) -> list[tuple[str, str]]:
-    """
-    Return a list of (desktop_label, wallpaper_path) for every desktop/space.
-
-    desktop_label is a human-readable string like "Desktop 1".
-    wallpaper_path is the resolved absolute path to the currently displayed image.
-    """
-    se_paths = get_system_events_paths()
-    if not se_paths:
-        reason = "System Events returned no desktops."
-        raise RuntimeError(reason)
-
-    shuffle_indices = tuple(i for i, p in enumerate(se_paths) if Path(p).is_dir())
-    open_images = get_open_wallpaper_images(debug=debug) if shuffle_indices else ()
-
-    results: list[tuple[str, str]] = []
-    shuffle_image_iter = iter(open_images)
-
-    for i, se_path in enumerate(se_paths):
-        label = f"Desktop {i + 1}"
-        if i not in shuffle_indices:
-            results.append((label, se_path))
-        else:
-            image = next(shuffle_image_iter, None)
-            if image:
-                results.append((label, image))
-            else:
-                results.append(
-                    (label, f"{se_path}  ← shuffle folder; no open image found")
-                )
-
-    return results
 
 
 def parse_args() -> argparse.Namespace:
     """Parse CLI args."""
     parser = argparse.ArgumentParser(
-        description="List current wallpaper paths per desktop on macOS."
+        description="List, open, or cycle wallpapers on macOS desktops."
     )
-    parser.add_argument("--debug", action="store_true", help="Print diagnostic info.")
+    parser.add_argument(
+        "-n",
+        "--next",
+        action="store_true",
+        help="Immediately cycle to the next shuffle wallpaper on all desktops.",
+    )
+    parser.add_argument(
+        "-o",
+        "--open",
+        action="store_true",
+        dest="open_images",
+        help=("Open all current wallpaper images in the app specified by -a"),
+    )
+    parser.add_argument(
+        "-a",
+        "--app",
+        default=OPEN_DEFAULT_APP,
+        metavar="APP",
+        help=f"App to use with --open (default: {OPEN_DEFAULT_APP}).",
+    )
+    parser.add_argument(
+        "-d",
+        "--debug",
+        action="store_true",
+        help="Print diagnostic info.",
+    )
+
     return parser.parse_args()
 
 
@@ -177,10 +100,13 @@ def main() -> None:
     require_macos()
     args = parse_args()
 
-    results = get_desktop_wallpapers(debug=args.debug)
-    col = max(len(label) for label, _ in results) + 2
-    for label, path in results:
-        print(f"{label:<{col}} {path}")
+    if args.next:
+        next_wallpaper()
+
+    paths = list_wallpapers(args)
+
+    if args.open_images:
+        open_wallpapers(paths, args.app)
 
 
 if __name__ == "__main__":

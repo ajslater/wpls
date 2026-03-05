@@ -286,6 +286,7 @@ ignore-overlong-task-comments = true
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["D101", "D102", "T203"]
 "wpls/__init__.py" = ["T201"]
+"wpls/list.py" = ["T201"]
 
 [tool.ruff.lint.pylint]
 max-args = 8

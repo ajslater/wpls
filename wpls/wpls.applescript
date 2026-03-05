@@ -1,7 +1,3 @@
-#!/usr/bin/osascript
-# Lists the wallpaper path currently showing on each desktop/space.
-# Outputs one bare path per line; labels may be added by the caller.
-
 set output to ""
 tell application "System Events"
     set desktopList to every desktop
