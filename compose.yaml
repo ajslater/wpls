@@ -1,0 +1,29 @@
+services:
+  wpls-build-builder:
+    build:
+      context: .
+      dockerfile: build.Dockerfile
+    image: ajslater/wpls-builder
+    container_name: wpls-build-builder
+  wpls-lint:
+    image: ajslater/wpls-builder
+    container_name: wpls-lint
+    command: make lint
+  wpls-test:
+    image: ajslater/wpls-builder
+    container_name: wpls-test
+    volumes:
+      - ./test-results:/app/test-results
+    command: make test
+  wpls-build:
+    image: ajslater/wpls-builder
+    container_name: wpls-build
+    volumes:
+      - ./dist:/app/dist
+    command: make build
+  wpls:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ajslater/wpls
+    container_name: wpls
