@@ -1,7 +1,7 @@
 jobs:
   build:
     machine:
-      image: ubuntu-2404:current
+      image: m4pro.medium
     steps:
       - checkout
       - run:
