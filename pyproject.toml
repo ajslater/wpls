@@ -4,10 +4,10 @@ dependencies = ["psutil>=7.2.2", "pyobjc-framework-osakit>=12.1"]
 description = "Lists the wallpaper file path currently showing on each desktop/space on macOS."
 keywords = []
 readme = "README.md"
+requires-python = ">=3.10"
 license = { text = "MIT" }
 name = "wpls"
 version = "0.1.0"
-requires-python = ">=3.10"
 [[project.authors]]
 name = "AJ Slater"
 email = "aj@slater.net"
