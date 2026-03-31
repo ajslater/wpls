@@ -46,7 +46,7 @@ def next_wallpaper() -> None:
     clicking "Change Wallpaper" in System Settings.
     """
     subprocess.run(  # noqa: S603
-        ("killall", WALLPAPER_IMAGE_PROCESS),
+        ("/usr/bin/killall", WALLPAPER_IMAGE_PROCESS),
         check=False,  # non-zero exit if process wasn't running; that's fine
     )
 
