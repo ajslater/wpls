@@ -1,19 +1,24 @@
-FROM ubuntu:questing
-
+# hadolint ignore=DL3007
+FROM nikolaik/python-nodejs:python3.14-nodejs24
 ENV DEBIAN_FRONTEND=noninteractive
 
+COPY debian.sources /etc/apt/sources.list.d/
 # hadolint ignore=DL3008
 RUN apt-get update \
     && apt-get upgrade -y \
-    && apt-get install -y --no-install-recommends \
-        python3-pip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# hadolint ignore=DL3016
-WORKDIR /
-COPY --chown=circleci:circleci bin bin
+WORKDIR /app
+COPY bin bin
+# hadolint ignore=DL3059
 
-# hadolint ignore=DL3059,DL3013
-RUN pip3 install --no-cache-dir -U wpls
-CMD ["wpls", "-h"]
+COPY pyproject.toml uv.lock package.json package-lock.json ./
+RUN npm install
+
+COPY . .
+RUN mkdir -p test-results dist
+
+# Install
+# hadolint ignore=DL3059
+RUN uv sync
