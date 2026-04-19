@@ -25,6 +25,8 @@ wpls = "wpls:main"
 dev = [
   "infer-types~=1.0.0",
   "neovim~=0.3",
+  "packaging>=26.0",
+  "pyyaml>=6.0.3",
   "semver~=3.0.4",
   "toml-cli~=0.7",
   "tomlkit~=0.14",
@@ -69,6 +71,7 @@ source-include = [
   "Makefile",
   "NEWS.md",
   "bin/**",
+  "bun.lock",
   "ci/**",
   "compose.yaml",
   "docs/DOCKER.md",
@@ -131,7 +134,7 @@ reportUnusedParameter = false
 builtin = "clear,code,rare"
 check-hidden = true
 ignore-words-list = "coverd,falsy,ro,searchd,thead,versio,ws"
-skip = "*~,.*,./dist,./node_modules,./package-lock.json,./package.json,./test-results,/uv.lock"
+skip = "*~,.*,./bun.lock,./dist,./node_modules,./package-lock.json,./package.json,./test-results,/uv.lock"
 
 [tool.complexipy]
 failed = true

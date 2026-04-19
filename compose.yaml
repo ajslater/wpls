@@ -3,11 +3,13 @@ services:
     build:
       context: .
       target: wpls-ci
-    image: wpls-ci:ci
     container_name: wpls-ci
+    entrypoint:
+      - sleep
+      - infinity
+    environment:
+      - PYTHONUNBUFFERED=1
+    image: wpls-ci:ci
     volumes:
       - ./test-results:/app/test-results
       - ./dist:/app/dist
-    environment:
-      - PYTHONUNBUFFERED=1
-    entrypoint: [sleep, infinity]
