@@ -7,9 +7,6 @@ on:
     branches: [main, develop]
 
 env:
-  CI_IMAGE: ghcr.io/${{ github.repository }}-ci
-  CI_IMAGE_TAG: ghcr.io/${{ github.repository }}-ci:latest
-  CI_CONTAINER: ${{ github.event.repository.name }}-ci
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 concurrency:
@@ -18,18 +15,19 @@ concurrency:
 
 jobs:
   # ---------------------------------------------------------------------------
-  # Lint, Test, and Build
+  # Lint, Test, and Build (macOS)
   # ---------------------------------------------------------------------------
+  # wpls is macOS-only (uses pyobjc-framework-osakit), so the entire pipeline
+  # — lint, test, build — runs natively on a macOS runner.
   test:
     name: Lint, Test & Build
-    runs-on: ubuntu-24.04
+    runs-on: macos-latest
     if: |
       github.ref_name == 'main' && github.event_name == 'push' ||
       github.base_ref == 'main' ||
       (github.base_ref == 'develop' && github.head_ref == 'pre-release')
     permissions:
       contents: read
-      packages: write
       checks: write
     steps:
       - name: Checkout
@@ -46,47 +44,38 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: bin/ci-download-dist-if-identical.sh
 
-      - name: Set up Docker Buildx
+      - name: Set up uv
         if: steps.gate.outputs.dist_found != 'true'
-        uses: docker/setup-buildx-action@v4
-
-      - name: Log in to GHCR
-        if: steps.gate.outputs.dist_found != 'true'
-        uses: docker/login-action@v4
+        uses: astral-sh/setup-uv@v8.0.0
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          enable-cache: true
 
-      # Build and cache the builder image in the registry
-      - name: Build builder image
+      - name: Set up bun
         if: steps.gate.outputs.dist_found != 'true'
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          load: true
-          tags: ${{ env.CI_IMAGE_TAG }}
-          cache-from: type=registry,ref=${{ env.CI_IMAGE}}:cache
-          cache-to: type=registry,ref=${{ env.CI_IMAGE}}:cache,mode=max
+        uses: oven-sh/setup-bun@v2
 
-      - name: Start Services
+      - name: Install Python
+        if: steps.gate.outputs.dist_found != 'true'
+        run: uv python install
+
+      - name: Install dependencies
         if: steps.gate.outputs.dist_found != 'true'
         run: |
           mkdir -p dist test-results
-          docker compose up -d ci
+          make install
 
       - name: Lint
         if: steps.gate.outputs.dist_found != 'true'
-        run: docker exec "$CI_CONTAINER" make lint
+        run: make lint
 
       - name: Tests
         id: tests
         if: steps.gate.outputs.dist_found != 'true'
-        run: docker exec "$CI_CONTAINER" make test
+        run: make test
 
       - name: Build Distribution
         if: steps.gate.outputs.dist_found != 'true'
-        run: docker exec "$CI_CONTAINER" make build
+        run: make build
 
       - name: Upload Test Results
         id: upload-tests
@@ -109,10 +98,6 @@ jobs:
           path: dist/
           retention-days: 2
 
-      - name: Stop Services
-        if: steps.gate.outputs.dist_found != 'true'
-        run: docker compose down
-
   # ---------------------------------------------------------------------------
   # Deploy to PyPI
   # ---------------------------------------------------------------------------
@@ -121,7 +106,7 @@ jobs:
     needs: test
     if: github.event_name == 'push' ||
       (github.base_ref == 'develop' && github.head_ref == 'pre-release')
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v6
