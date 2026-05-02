@@ -73,6 +73,7 @@ source-include = [
   "bin/**",
   "bun.lock",
   "ci/**",
+  "compose.yaml",
   "docs/DOCKER.md",
   "docs/NEWS",
   "docs/NEWS.md",
