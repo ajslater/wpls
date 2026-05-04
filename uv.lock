@@ -1019,6 +1019,18 @@ wheels = [
 ]
 
 [[package]]
+name = "pypi-cleanup"
+version = "0.1.10"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/15/5e/09422369613502701638e98b208ffb7bfc12c8722b43554f4b6a54bda209/pypi_cleanup-0.1.10.tar.gz", hash = "sha256:db1c7dca7e1114497fe73034e7dd579f8700e885e8ea9e164a63a1ee3be4af3d", size = 19429, upload-time = "2026-02-26T01:34:12.543Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9b/ee/1e0ae175e1aee8a98c58b6026dd13d6526ee63cb9a801228730abf0b9f30/pypi_cleanup-0.1.10-py3-none-any.whl", hash = "sha256:8d727d6437198b9171a0ef2875be6301a7db89d399ab955ab02354350b4a46b6", size = 14947, upload-time = "2026-02-26T01:34:11.33Z" },
+]
+
+[[package]]
 name = "pytest"
 version = "9.0.3"
 source = { registry = "https://pypi.org/simple" }
@@ -1601,6 +1613,7 @@ dev = [
     { name = "infer-types" },
     { name = "neovim" },
     { name = "packaging" },
+    { name = "pypi-cleanup" },
     { name = "pyyaml" },
     { name = "semver" },
     { name = "toml-cli" },
@@ -1643,6 +1656,7 @@ dev = [
     { name = "infer-types", specifier = "~=1.0.0" },
     { name = "neovim", specifier = "~=0.3" },
     { name = "packaging", specifier = ">=26.0" },
+    { name = "pypi-cleanup", specifier = "~=0.1.10" },
     { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "semver", specifier = "~=3.0.4" },
     { name = "toml-cli", specifier = "~=0.7" },
