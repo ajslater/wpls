@@ -1,5 +1,8 @@
 [project]
-classifiers = []
+classifiers = [
+  "Operating System :: MacOS :: MacOS X",
+  "Programming Language :: Python :: 3",
+]
 dependencies = ["psutil>=7.2.2", "pyobjc-framework-osakit>=12.1"]
 description = "Lists the wallpaper file path currently showing on each desktop/space on macOS."
 keywords = []
