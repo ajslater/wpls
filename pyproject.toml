@@ -50,11 +50,7 @@ lint = [
   "ty~=0.0.17",
   "vulture~=2.3"
 ]
-test = [
-  "coverage[toml]~=7.0",
-  "pytest-asyncio~=1.0",
-  "pytest-cov~=7.0",
-]
+test = ["coverage[toml]~=7.0", "pytest-asyncio~=1.0", "pytest-cov~=7.0"]
 docs = ["mkdocs-minify-plugin~=0.8", "mkdocs~=1.6"]
 ci = ["requests~=2.32"]
 
@@ -69,7 +65,6 @@ source-include = [
   ".env.platforms",
   ".picopt_treestamps.yaml",
   ".readthedocs.yaml",
-  ".remarkignore",
   ".shellcheckrc",
   "Makefile",
   "NEWS.md",
