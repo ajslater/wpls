@@ -2,11 +2,12 @@
 # Lint checks
 set -euxo pipefail
 
-uv run mbake validate Makefile cfg/*.mk
+uvx mbake@latest validate Makefile cfg/*.mk
 
 # Javascript, JSON, Markdown, YAML #####
 bun run lint
 
-bin/lint-darwin.sh
+bin/sh-tools.sh --lint
 
-uv run bin/roman.py -i .prettierignore .
+# Not .prettierignore: it lists *.sh, which would hide every script from roman.
+uv run bin/roman.py -i .shellignore .

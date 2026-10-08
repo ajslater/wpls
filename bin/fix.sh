@@ -5,7 +5,7 @@ set -euxo pipefail
 #####################
 ###### Makefile #####
 #####################
-uv run mbake format Makefile cfg/*.mk
+uvx mbake@latest format Makefile cfg/*.mk
 
 ################
 # Ignore files #
@@ -20,4 +20,4 @@ bun run fix
 ###################
 ###### Shell ######
 ###################
-bin/fix-sh.sh
+bin/sh-tools.sh --fix
