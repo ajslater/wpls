@@ -440,11 +440,11 @@ sdist = { url = "https://files.pythonhosted.org/packages/f1/2a/8c3ac3d8bc94e6de8
 
 [[package]]
 name = "executing"
-version = "2.2.1"
+version = "2.3.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/cc/28/c14e053b6762b1044f34a13aab6859bbf40456d37d23aa286ac24cfd9a5d/executing-2.2.1.tar.gz", hash = "sha256:3632cc370565f6648cc328b32435bd120a1e4ebb20c77e3fdde9a13cd1e533c4", size = 1129488, upload-time = "2025-09-01T09:48:10.866Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/52/92/8a611141e42930c0f194f7504063ab87dfe970cf1a5af28e7703df448734/executing-2.3.0.tar.gz", hash = "sha256:15919cb5d667e5cb4e099511971d00d659573fff2dd5c4e6cd8b71636c7858d2", size = 1338003, upload-time = "2026-10-10T14:06:04.64Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c1/ea/53f2148663b321f21b5a606bd5f191517cf40b7072c0497d3c92c4a13b1e/executing-2.2.1-py2.py3-none-any.whl", hash = "sha256:760643d3452b4d777d295bb167ccc74c64a81df23fb5e08eff250c425a4b2017", size = 28317, upload-time = "2025-09-01T09:48:08.5Z" },
+    { url = "https://files.pythonhosted.org/packages/4d/dd/8bc67e7d5ffc1d88aa5af511189dfb76dc4e1e5b808fab186146ef2663e5/executing-2.3.0-py3-none-any.whl", hash = "sha256:736e859c9f8701f11fcf516856f26f562e04776387824b43a35a1dfe21c84122", size = 29393, upload-time = "2026-10-10T14:06:02.777Z" },
 ]
 
 [[package]]
@@ -983,11 +983,11 @@ wheels = [
 
 [[package]]
 name = "platformdirs"
-version = "4.12.4"
+version = "4.13.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/90/a1/d5f9002a70298c64a789779077d8dd90c10aa1f47fe40c86802df874f2a6/platformdirs-4.12.4.tar.gz", hash = "sha256:63743c02414e755de4e31b8f68125c1407495b86c5a006e203c01ff8b9924250", size = 60010, upload-time = "2026-10-07T23:30:32.426Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/80/a8/66d45abadff219e36e2a824181b8f6a67e7ed4572934d6252c71c29d5731/platformdirs-4.13.0.tar.gz", hash = "sha256:1aa0b0d3f224c1f07c295121e312a5a24a180d6ae5a8425ea1784b3e3863e9c0", size = 61094, upload-time = "2026-10-11T02:05:24.109Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f4/ba/223e00b885e960edd5d4b4d178c88acce019bd5b83786093681b8c393492/platformdirs-4.12.4-py3-none-any.whl", hash = "sha256:78bfb9db2a8471ed7eebe3c3c932da413911042994e699b384fbb4493fa872d7", size = 32596, upload-time = "2026-10-07T23:30:30.825Z" },
+    { url = "https://files.pythonhosted.org/packages/8d/15/1633010b26e88e872c93b67c0b6c5e174fb74cb6fb5c1472b4d51d4a8f22/platformdirs-4.13.0-py3-none-any.whl", hash = "sha256:3dbcf4cd708f21cf876c4eaa90e58412bc4f033d87143f41b1493ff77c25b7e1", size = 32724, upload-time = "2026-10-11T02:05:22.776Z" },
 ]
 
 [[package]]
@@ -1100,14 +1100,14 @@ wheels = [
 
 [[package]]
 name = "pypi-cleanup"
-version = "0.1.11"
+version = "0.1.12"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/67/e2/5d03e163db7b67e164e5353d6a69c13e8523a503286f0f11efd0f94e261d/pypi_cleanup-0.1.11.tar.gz", hash = "sha256:d4be3c95c8584f692e41589c76421f1aafdff36145a11d72a600930a62534d4b", size = 21152, upload-time = "2026-10-06T18:16:07.126Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/50/1a/74f54a319bc44a489ee005ff961370005b1d739d6b2214198732da36daf8/pypi_cleanup-0.1.12.tar.gz", hash = "sha256:620601a8cede1a866c43872a65cf2182652d7b308580f661a209e5bf5fbf037f", size = 21139, upload-time = "2026-10-11T00:19:37.771Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1f/71/d19eeac822ccf7196fcece0542895b7807373bb08f36d3f3372c98e97969/pypi_cleanup-0.1.11-py3-none-any.whl", hash = "sha256:38985d0584ebe3a5dba185f5dd867b261353abde990f4c2a160ac9db515e99fd", size = 16210, upload-time = "2026-10-06T18:16:06.112Z" },
+    { url = "https://files.pythonhosted.org/packages/9f/95/1d263614c8afd9ac4dc08418a482d3f85f68d06e0724fbcb45f43a27169a/pypi_cleanup-0.1.12-py3-none-any.whl", hash = "sha256:9721aa963de6f5170e9216470815cfa6891850aee421a107bcf33c9aa93519ad", size = 16210, upload-time = "2026-10-11T00:19:36.712Z" },
 ]
 
 [[package]]
@@ -1583,14 +1583,14 @@ wheels = [
 
 [[package]]
 name = "typeshed-client"
-version = "2.13.0"
+version = "2.14.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/62/eb/ef31fadb73c5a9da6e88adf146b9db88282cf17136beb65a1c88905afe2f/typeshed_client-2.13.0.tar.gz", hash = "sha256:85ce73be98a5e3a51cafb2e2921653e3759ce7e9d1530adcca935dec201152f2", size = 532578, upload-time = "2026-08-03T04:11:13.63Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1b/51/42f516f1e67dd3e291d8e80d9217704af16241cbd2b6c2c4c1f3eba8bfe1/typeshed_client-2.14.0.tar.gz", hash = "sha256:b7438c6f1d843e87e734102ca875d45a4c55b8abd15c4e16ce4af9345ad4085d", size = 536464, upload-time = "2026-10-12T23:12:48.319Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/76/2b/83e50380aa9ca001ee74460f027b518eefd330edb7ab7787442424f1e584/typeshed_client-2.13.0-py3-none-any.whl", hash = "sha256:71bc9ed297ddb32d3c4b2d29b5e688c6b0b9a21ca8ce6082d0aa7cee9cad5077", size = 800208, upload-time = "2026-08-03T04:11:12.368Z" },
+    { url = "https://files.pythonhosted.org/packages/b2/81/3eee24796e76355265fbcd5fd424bab0f16cb05c87107473c999525dc0ef/typeshed_client-2.14.0-py3-none-any.whl", hash = "sha256:9784bdb4bcb6235d015375b1225847d324d351a6a309cf30c869b08489a7f9d3", size = 803863, upload-time = "2026-10-12T23:12:46.461Z" },
 ]
 
 [[package]]
@@ -1718,7 +1718,7 @@ lint = [
     { name = "icecream", specifier = "~=2.1" },
     { name = "pathspec", specifier = "~=1.1.0" },
     { name = "radon", specifier = "~=6.0" },
-    { name = "ruff", specifier = "~=0.16" },
+    { name = "ruff", specifier = "~=0.17" },
     { name = "ty", specifier = "~=0.0.17" },
     { name = "types-python-dateutil", specifier = "~=2.9" },
     { name = "vulture", specifier = "~=2.3" },
