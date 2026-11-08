@@ -9,8 +9,8 @@ from typing import TYPE_CHECKING
 
 import psutil
 from OSAKit import (
-    OSALanguage,  # pyright: ignore[reportAttributeAccessIssue], # ty: ignore[unresolved-import]
-    OSAScript,  # pyright: ignore[reportAttributeAccessIssue], # ty: ignore[unresolved-import]
+    OSALanguage,  # pyright: ignore[reportAttributeAccessIssue], # ty: ignore[import-not-found]
+    OSAScript,  # pyright: ignore[reportAttributeAccessIssue], # ty: ignore[import-not-found]
 )
 
 if TYPE_CHECKING:
