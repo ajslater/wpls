@@ -97,6 +97,7 @@ exclude = [
   "test-results",
   "typings",
   "vulture_ignorelist.py",
+  "tasks",
 ]
 pythonVersion = "3.11"
 failOnWarnings = false
@@ -161,7 +162,7 @@ testpaths = ["tests"]
 pythonpath = ["."]
 
 [tool.radon]
-exclude = "*~,config/*,dist/*,frontend/*,node_modules/*,site/*,test-results/*,typings/*,vulture_ignorelist.py"
+exclude = "*~,config/*,dist/*,frontend/*,node_modules/*,site/*,test-results/*,typings/*,vulture_ignorelist.py,tasks/*"
 
 [tool.ruff]
 builtins = ["ic"]
@@ -172,6 +173,7 @@ extend-exclude = [
   "test-results",
   "typings",
   "vulture_ignorelist.py",
+  "tasks",
 ]
 show-fixes = true
 target-version = "py311"
@@ -288,6 +290,7 @@ exclude = [
   "test-results",
   "typings",
   "vulture_ignorelist.py",
+  "tasks",
 ]
 
 [tool.vulture]
@@ -299,6 +302,7 @@ exclude = [
   "*/site/*",
   "*/test-results/*",
   "*/typings/*",
+  "*/tasks/*",
 ]
 min_confidence = 61
 sort_by_size = true
