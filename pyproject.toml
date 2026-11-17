@@ -38,7 +38,7 @@ build = []
 lint = [
   "basedpyright~=1.38",
   "codespell~=2.4",
-  "complexipy~=8.2",
+  "complexipy~=9.0",
   "icecream~=2.1",
   "pathspec~=1.1.0",
   "radon~=6.0",
@@ -47,7 +47,6 @@ lint = [
   "vulture~=2.3",
 ]
 test = ["coverage~=7.0", "pytest-asyncio~=1.0", "pytest-cov~=7.0"]
-docs = ["zensical~=0.1"]
 ci = ["requests~=2.32"]
 
 [build-system]
