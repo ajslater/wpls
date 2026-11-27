@@ -1,0 +1,57 @@
+# wpls's caller for devenv's CI building blocks (the devenv-* workflows and
+# actions, managed by devenv). The same shape as devenv's standard ci.yml, but
+# wpls is macOS-only (pyobjc-framework-osakit), so its checks run natively on
+# a macOS runner instead of in a Linux container.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # The required check is "CI / Lint, Test & Build Dist".
+  ci:
+    name: CI
+    uses: ./.github/workflows/devenv-check.yml
+    with:
+      container: false
+      runner: macos-latest
+    permissions:
+      contents: read
+      actions: read
+      packages: write
+      checks: write
+
+  pypi:
+    name: Publish to PyPI
+    needs: ci
+    if: ${{ !cancelled() && needs.ci.result == 'success' && needs.ci.outputs.deploy == 'true' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: .github/actions
+
+      - name: Publish to PyPI
+        uses: ./.github/actions/devenv-pypi
+        with:
+          token: ${{ secrets.PYPI_TOKEN }}
+
+  # Every deploy job must be in release.needs and be required to succeed.
+  release:
+    name: Release
+    needs: [ci, pypi]
+    if: ${{ !cancelled() && needs.ci.outputs.release == 'true' && needs.pypi.result == 'success' }}
+    uses: ./.github/workflows/devenv-release.yml
+    permissions:
+      contents: write

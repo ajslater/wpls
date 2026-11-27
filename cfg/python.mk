@@ -5,25 +5,19 @@ export DEVENV_PYTHON
 ## Clean python caches
 ## @category Clean
 clean::
-	find . -name "__pycache__" -print0 | xargs -0 rm -rf
-	rm -rf .coverage
-
-.PHONY: install-deps-pip
-## Update pip and install node packages
-## @category Install
-install-deps-pip: install-deps-npm
-	pip install --upgrade pip
+	find . \( -name node_modules -o -path '*/.*' \) -prune -o -name __pycache__ -type d -print0 | xargs -0 rm -rf
+	rm -rf .coverage .coverage.*
 
 .PHONY: install-prod
 ## Install for production
 ## @category Install
-install-prod: install-deps-pip
+install-prod:
 	uv sync --no-install-project --no-dev
 
 .PHONY: install
 ## Install with dev and all extras and groups
 ## @category Install
-install:: install-deps-pip
+install::
 	uv sync --no-install-project --all-extras --all-groups --all-packages
 
 .PHONY: update-python
@@ -35,22 +29,25 @@ update-python:
 .PHONY: update
 ## Update dependencies
 ## @category Update
-update:: update-python update-npm
+update:: update-python
 
-## Show version. Use V variable to set version
-## @category Update
-V :=
 .PHONY: version
-## Show or set project version
+## Show or set project version for python
 ## @category Update
-version:
-	bin/version.sh $(V)
+version::
+	bin/version-python.sh $(V)
 
 .PHONY: fix-python
 ## Fix python lint errors
 ## @category Fix
 fix-python:
 	./bin/fix-python.sh
+
+.PHONY: fix-complexity
+## Refactor python functions over the complexity limit
+## @category Fix
+fix-complexity:
+	./bin/fix-complexity.sh
 
 .PHONY: fix
 ## Fix python lint errors
@@ -61,13 +58,19 @@ fix:: fix-python
 ## Static typecheck
 ## @category Lint
 typecheck:
-	uv run --group lint --group build basedpyright .
+	uv run --group lint --group test --group build basedpyright .
 
 .PHONY: ty
 ## Static typecheck with ty
 ## @category Lint
 ty:
-	uv run --group lint --group build ty check .
+	uv run --group lint --group test --group build ty check .
+
+.PHONY: vulture
+## Lint dead code with vulture
+## @category Lint
+vulture:
+	./bin/lint-vulture.sh
 
 .PHONY: complexity
 ## Lint backend complexity
@@ -75,11 +78,16 @@ ty:
 complexity:
 	./bin/lint-complexity.sh
 
+.PHONY: lint-python
+## Lint python
+## @category Lint
+lint-python:
+	./bin/lint-python.sh
+
 .PHONY: lint
 ## Lint python
 ## @category Lint
-lint::
-	./bin/lint-python.sh
+lint:: lint-python
 
 .PHONY: uml
 ## Create a UML class diagram
@@ -93,6 +101,8 @@ uml:
 cycle:
 	uvx pycycle --ignore node_modules,.venv --verbose --here
 
+## Tests to run, as pytest arguments
+## @category Test
 T :=
 .PHONY: test-python
 ## Test Python
@@ -113,8 +123,10 @@ build::
 	uv build
 endif
 
+ifndef OVERRIDE_PUBLISH
 .PHONY: publish
 ## Publish package to pypi
 ## @category Deploy
 publish:
 	uv publish
+endif

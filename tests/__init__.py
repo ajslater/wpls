@@ -1,0 +1,1 @@
+"""Wallpaper Tool Tests."""
